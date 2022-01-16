@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo:4
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+
+  mongo-express:
+    image: mongo-express
+    restart: unless-stopped
+    ports:
+      - 9091:8081
+    links:
+      - mongo
+
+  web-api:
+    build: ./TodoApi/
+    volumes:
+      - ./TodoApi/src:/app/src
+      - ./TodoApi/go.mod:/app/go.mod
+      - ./TodoApi/go.sum:/app/go.sum
+      - ./TodoApi/modd.conf:/app/modd.conf
+    ports:
+      - 9090:9090
+    links:
+      - mongo
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:
