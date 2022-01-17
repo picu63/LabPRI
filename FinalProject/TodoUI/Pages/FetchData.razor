@@ -1,0 +1,48 @@
+﻿@page "/fetchdata"
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using TodoUI.Services
+@inject TodoService todoService;
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (todos == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Task name</th>
+                <th>Completed</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for (var i = 0; i < todos.Length; i++)
+        {
+            var todo = todos[i];
+            <tr>
+                <td>@(i+1)</td>
+                <td>@todo.Task</td>
+                <td>@(todo.Completed ? "yes" : "no")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Todo[]? todos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        todos = await todoService.GetAllTodos();
+    }
+}
