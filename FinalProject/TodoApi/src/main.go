@@ -1,11 +1,11 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"host.local/go/golang-todo-api/src/database"
 	"host.local/go/golang-todo-api/src/handlers"
-	"host.local/go/golang-todo-api/src/middlewares"
 )
 
 func main() {
@@ -15,17 +15,18 @@ func main() {
 	todoHandler := handlers.NewTodo()
 
 	router := gin.Default()
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
 
-	router.Use(middlewares.CORSMiddleware())
+	router.Use(cors.New(config))
 
-	router.GET("/", todoHandler.GetTodos)
+	router.GET("/api/todos", todoHandler.GetTodos)
 
-	router.POST("/", todoHandler.CreateTodo)
+	router.POST("/api/todos", todoHandler.CreateTodo)
 
-	router.PUT("/:id", todoHandler.UpdateTodo)
+	router.PUT("/api/todos/:id", todoHandler.UpdateTodo)
 
-	router.DELETE("/:id", todoHandler.DeleteTodo)
+	router.DELETE("/api/todos/:id", todoHandler.DeleteTodo)
 
 	router.Run(":9090")
-
 }
