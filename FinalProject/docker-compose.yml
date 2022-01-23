@@ -14,7 +14,14 @@ services:
       - 9091:8081
     links:
       - mongo
-
+  seq-logger:
+    image: datalust/seq
+    restart: unless-stopped
+    ports:
+      - 5341:80
+    environment:
+      - ACCEPT_EULA=Y
+      
   web-api:
     build: ./TodoApi/
     volumes:
@@ -28,6 +35,11 @@ services:
       - mongo
     depends_on:
       - mongo
+
+  web-ui:
+    build: ./TodoUI/
+    ports:
+      - 8080:80
 
 volumes:
   mongo-data:
