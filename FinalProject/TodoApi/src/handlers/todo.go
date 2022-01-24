@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"host.local/go/golang-todo-api/src/models"
 )
 
@@ -28,14 +29,16 @@ func (p *Todos) CreateTodo(c *gin.Context) {
 		return
 	}
 
-	err := todoModel.InsertOne()
+	result, err := todoModel.InsertOne()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
-
-	c.Status(http.StatusCreated)
+	oid, _ := result.InsertedID.(primitive.ObjectID)
+	c.JSON(http.StatusCreated, map[string]interface{}{
+		"id": oid.Hex(),
+	})
 }
 
 func (todo *Todos) GetTodos(c *gin.Context) {

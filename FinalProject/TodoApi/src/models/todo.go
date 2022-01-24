@@ -28,14 +28,14 @@ func (todo *Todo) Validate() error {
 }
 
 // InsertOne insert a new entry
-func (todo *Todo) InsertOne() error {
-	_, err := database.GetCollectionPointer().InsertOne(context.Background(), todo)
+func (todo *Todo) InsertOne() (*mongo.InsertOneResult, error) {
+	result, err := database.GetCollectionPointer().InsertOne(context.Background(), todo)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return result, nil
 }
 
 // Update updates an element
