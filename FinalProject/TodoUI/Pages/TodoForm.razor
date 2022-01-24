@@ -1,0 +1,15 @@
+﻿@using TodoUI.Services
+<h3>Add Todo</h3>
+
+<MudForm @ref="form" @bind-isValid="@success" @bind-Errors="@errors">
+    <MudTextField T="string" @bind-Value="todoText"></MudTextField>
+    <MudButton Disabled="!success" OnClick="async ()=> await OnNewTodoItem.InvokeAsync(new Todo(){Task = todoText})" Color="Color.Primary">ADD</MudButton>
+</MudForm>
+@code {
+    private bool success;
+    private string[] errors;
+    private string todoText;
+    private MudForm form;
+    [Parameter]
+    public EventCallback<Todo> OnNewTodoItem { get; set; }
+}

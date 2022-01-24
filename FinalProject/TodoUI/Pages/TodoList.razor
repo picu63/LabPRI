@@ -6,43 +6,60 @@
 
 <PageTitle>Weather forecast</PageTitle>
 
-<h1>Weather forecast</h1>
-
-<p>This component demonstrates fetching data from the server.</p>
-
 @if (todos == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Task name</th>
-                <th>Completed</th>
-            </tr>
-        </thead>
-        <tbody>
-        @for (var i = 0; i < todos.Length; i++)
-        {
-            var todo = todos[i];
-            <tr>
-                <td>@(i+1)</td>
-                <td>@todo.Task</td>
-                <td>@(todo.Completed ? "yes" : "no")</td>
-            </tr>
-        }
-        </tbody>
-    </table>
+    <TodoForm OnNewTodoItem="NewTodoAdded"></TodoForm>
+    <MudTable Items="todos.Take(10)" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@isLoading">
+        <HeaderContent>
+            <MudTh>Task name</MudTh>
+            <MudTh>Completed</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Task name">@context.Task</MudTd>
+            <MudTd DataLabel="Completed">
+                <MudCheckBox T="bool" Checked="@context.Completed" CheckedChanged="@(async (isChecked) => await TodoStatusCheckboxClicked(@context, isChecked))"/>
+            </MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => DeleteButtonClicked(context)"/>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
 }
 
 @code {
-    private Todo[]? todos;
+    private List<Todo> todos;
+    private bool tempTodo { get; set; }
+    private bool isLoading = true;
+
+    [Parameter]
+    public EventCallback<Todo> TodoUpdated { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        todos = await todoService.GetAllTodos();
+        todos = (await todoService.GetAllTodos()).ToList();
+        isLoading = false;
+    }
+
+    private async Task TodoStatusCheckboxClicked(Todo item, bool isChecked)
+    {
+        await todoService.ChangeStatus(item.Id, isChecked); 
+        item.Completed = isChecked;
+    }
+
+    private async Task DeleteButtonClicked(Todo itemToDelete)
+    {
+        await todoService.Delete(itemToDelete.Id); 
+        todos.Remove(itemToDelete);
+    }
+
+    private async Task NewTodoAdded(Todo todo)
+    {
+        var entity = await todoService.CreateNewByName(todo.Task);
+        todos.Add(entity);
     }
 }
