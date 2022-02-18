@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using TodoUI.Models;
 
 namespace TodoUI.Services;
 
@@ -25,6 +26,7 @@ public class TodoService
     public async Task ChangeStatus(string todoId, bool isCompleted)
     {
         var requestUri = $"api/todos/{todoId}";
+        logger.LogInformation($"Changing status of TODO {todoId} to {(isCompleted ? "completed" : "not completed")}");
         var response = await httpClient.PutAsJsonAsync(requestUri, new {Completed = isCompleted });
         if (!response.IsSuccessStatusCode)
         {
@@ -35,6 +37,7 @@ public class TodoService
     public async Task Delete(string todoId)
     {
         var requestUri = $"api/todos/{todoId}";
+        logger.LogInformation($"Deleting TODO with id: {todoId}");
         var response = await httpClient.DeleteAsync(requestUri);
         if (!response.IsSuccessStatusCode)
         {
@@ -59,18 +62,3 @@ public class TodoService
     record CreateResponse(string Id);
 }
 
-public class Todo
-{
-
-    [JsonPropertyName("_id")]
-    public string Id { get; set; }
-    public string Task { get; init; }
-    public bool Completed { get; set; }
-
-    public void Deconstruct(out string Id, out string Task, out bool Completed)
-    {
-        Id = this.Id;
-        Task = this.Task;
-        Completed = this.Completed;
-    }
-}

@@ -3,12 +3,14 @@ package main
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/nullseed/logruseq"
 	log "github.com/sirupsen/logrus"
 	"host.local/go/golang-todo-api/src/database"
 	"host.local/go/golang-todo-api/src/handlers"
 )
 
 func main() {
+	log.AddHook(logruseq.NewSeqHook("http://localhost:5341"))
 	log.Info("Starting the application")
 	database.Init()
 

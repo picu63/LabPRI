@@ -1,8 +1,10 @@
 ﻿@page "/todos"
 @using System.Text.Json
 @using System.Text.Json.Serialization
+@using TodoUI.Models
 @using TodoUI.Services
 @inject TodoService todoService;
+@inject ILogger<TodoList> logger;
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -13,7 +15,7 @@
 else
 {
     <TodoForm OnNewTodoItem="NewTodoAdded"></TodoForm>
-    <MudTable Items="todos.Take(10)" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@isLoading">
+    <MudTable Items="todos" Hover="true"  Breakpoint="Breakpoint.Sm" Loading="@isLoading">
         <HeaderContent>
             <MudTh>Task name</MudTh>
             <MudTh>Completed</MudTh>
@@ -28,6 +30,9 @@ else
                 <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => DeleteButtonClicked(context)"/>
             </MudTd>
         </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
     </MudTable>
 }
 
@@ -53,6 +58,7 @@ else
 
     private async Task DeleteButtonClicked(Todo itemToDelete)
     {
+        logger.LogInformation($"Deleting {itemToDelete}");
         await todoService.Delete(itemToDelete.Id); 
         todos.Remove(itemToDelete);
     }
@@ -60,6 +66,6 @@ else
     private async Task NewTodoAdded(Todo todo)
     {
         var entity = await todoService.CreateNewByName(todo.Task);
-        todos.Add(entity);
+        todos.Insert(0,entity);
     }
 }

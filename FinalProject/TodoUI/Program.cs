@@ -8,7 +8,8 @@ using TodoUI.Services;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Logging.AddSerilog(new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.Seq("http://localhost:5341/")
+    .WriteTo.Seq(builder.Configuration.GetValue<string>("Logger:BaseUrl"))
+    .MinimumLevel.Information()
     .CreateLogger());
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");

@@ -4,9 +4,16 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nullseed/logruseq"
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"host.local/go/golang-todo-api/src/models"
 )
+
+func init() {
+	log.AddHook(logruseq.NewSeqHook("http://localhost:5341"))
+	log.Info("Starting the application")
+}
 
 type Todos struct{}
 
@@ -20,7 +27,7 @@ func NewTodo() *Todos {
 func (p *Todos) CreateTodo(c *gin.Context) {
 
 	c.BindJSON(&todoModel)
-
+	log.Info("Creating a new todo")
 	if len(todoModel.Task) < 2 {
 		c.JSON(
 			http.StatusInternalServerError,
@@ -42,6 +49,7 @@ func (p *Todos) CreateTodo(c *gin.Context) {
 }
 
 func (todo *Todos) GetTodos(c *gin.Context) {
+	log.Info("Getting all todos")
 	todoModel, err := todoModel.GetAll()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -53,7 +61,7 @@ func (todo *Todos) GetTodos(c *gin.Context) {
 
 func (todo *Todos) UpdateTodo(c *gin.Context) {
 	id := c.Param("id")
-
+	log.Info("Updating a todo with id %s", id)
 	c.BindJSON(&todoModel)
 
 	err := todoModel.Update(id)
@@ -68,7 +76,7 @@ func (todo *Todos) UpdateTodo(c *gin.Context) {
 
 func (todo *Todos) DeleteTodo(c *gin.Context) {
 	id := c.Param("id")
-
+	log.Info("Deleting a todo with id %s", id)
 	err := todoModel.Delete(id)
 
 	if err != nil {
