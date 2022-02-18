@@ -49,16 +49,16 @@ public class TodoService
     {
         var requestUri = $"api/todos";
         var newTodo = new { Completed = false, Task = taskName};
+        logger.LogInformation($"Creating new TODO with name: {taskName}");
         var response = await httpClient.PostAsJsonAsync(requestUri, newTodo);
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(response.StatusCode.ToString());
         }
         var id = (await response.Content.ReadFromJsonAsync<CreateResponse>()).Id;
-
+        logger.LogInformation($"New TODO was created successfully with id: {id}");
         return new Todo(){Completed = newTodo.Completed, Task = newTodo.Task, Id = id};
     }
 
     record CreateResponse(string Id);
 }
-
