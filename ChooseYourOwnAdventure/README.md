@@ -1,7 +1,11 @@
 # Exercise #3: Choose your own adventure
 
-[![exercise status: released](https://img.shields.io/badge/exercise%20status-released-green.svg?style=for-the-badge)](https://gophercises.com/exercises/cyoa) [![demo: ->](https://img.shields.io/badge/demo-%E2%86%92-blue.svg?style=for-the-badge)](https://gophercises.com/demos/cyoa/)
+[![topic: json](https://img.shields.io/badge/topic-json-green.svg?style=flat-square)](https://github.com/search?q=topic%3Ajson+org%3Agophercises&type=Repositories)
+[![topic: html-templates](https://img.shields.io/badge/topic-html%20templates-green.svg?style=flat-square)](https://github.com/search?q=topic%3Ahtml-templates+org%3Agophercises&type=Repositories)
+[![topic: http-handlers](https://img.shields.io/badge/topic-http%20handlers-green.svg?style=flat-square)](https://github.com/search?q=topic%3Ahttp-handlers+org%3Agophercises&type=Repositories)
 
+![video status: unreleased](https://img.shields.io/badge/video%20status-unreleased-red.svg?style=flat-square)
+![code status: unreleased](https://img.shields.io/badge/code%20status-unreleased-red.svg?style=flat-square)
 
 ## Exercise details
 
@@ -39,7 +43,7 @@ Stories will be provided via a JSON file with the following format:
 }
 ```
 
-*See [gopher.json](https://github.com/gophercises/cyoa/blob/master/gopher.json) for a real example of a JSON story. I find that seeing the real JSON file really helps answer any confusion or questions about the JSON format.*
+*See [gopher.json](gopher.json) for a real example of a JSON story. I find that seeing the real JSON file really helps answer any confusion or questions about the JSON format.*
 
 You are welcome to design the code however you want. You can put everything in a single `main` package, or you can break the story into its own package and use that when creating your http handlers.
 
